@@ -1,10 +1,8 @@
-from scipy.ndimage import rotate
 from keras.models import *
 from keras.layers import *
 from keras.initializers import *
 import tensorflow as tf
 import numpy as np
-from keras.optimizers import *
 
 class CustomModelCheckpoint(tf.keras.callbacks.Callback):
     def __init__(self, save_path, save_every):
@@ -17,32 +15,6 @@ class CustomModelCheckpoint(tf.keras.callbacks.Callback):
             model_path = self.save_path.format(epoch=epoch + 1)
             self.model.save(model_path)
             print(f"Model saved at: {model_path}")
-
-def rotate_image_2d(image, angle):
-    """
-    Rotates a 2D image clockwise by a given angle and fills blank spaces with a specified value.
-    
-    Args:
-        image (numpy.ndarray): Input image of size (512, 512, 1).
-        angle (float): Angle by which to rotate the image clockwise, in degrees.
-        fill_value (float): Value to fill blank spaces with.
-    
-    Returns:
-        numpy.ndarray: Rotated image of size (512, 512, 1).
-    """
-    if image.shape != (512, 512, 1):
-        raise ValueError("Input image must have shape (512, 512, 1).")
-    fill_value=np.mean(image[0:5,0:5,0])
-    # Remove the last dimension to perform 2D rotation
-    image_2d = np.squeeze(image, axis=-1)
-    
-    # Rotate the image clockwise (-angle) with constant mode and custom fill value
-    rotated_image = rotate(image_2d, angle=-angle, reshape=False, mode='constant', cval=fill_value)
-    
-    # Add the last dimension back to maintain shape (512, 512, 1)
-    rotated_image = rotated_image[..., np.newaxis]
-    
-    return rotated_image
 
 def get_unet_with_batchnorm():
     inputs = Input((512, 512, 1))
@@ -104,46 +76,3 @@ def get_unet_with_batchnorm():
 
     model = Model(inputs=inputs, outputs=conv6)
     return model
-
-
-def changeimage(img,label,max_cval,size):
-    img=img/max_cval
-    label=label/max_cval
-    label[label>0.5]=1
-    label[label<=0.5]=0
-    imgsize = len(img)
-    cutoffx = (imgsize-size)//2
-    imgnow=img[cutoffx:imgsize-cutoffx,cutoffx:imgsize-cutoffx]
-    labnow=label[cutoffx:imgsize-cutoffx,cutoffx:imgsize-cutoffx]
-    return imgnow,labnow
-
-def calculate_metrics(y_true, y_pred):
-    intersection = np.sum(np.logical_and(y_true, y_pred))
-    union = np.sum(np.logical_or(y_true, y_pred))
-    iou = intersection / union if union > 0 else 0.0
-    
-    tp = np.sum(np.logical_and(y_true, y_pred))
-    fp = np.sum(np.logical_and(np.logical_not(y_true), y_pred))
-    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-    
-    fn = np.sum(np.logical_and(y_true, np.logical_not(y_pred)))
-    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-    
-    return precision, recall, iou
-
-def calculate_threshold_iou(pres, vers, threshold=0.5):
-    y_pred = pres.astype(bool)
-    y_true = vers.astype(bool)
-    
-    intersection = np.logical_and(y_pred, y_true)
-    union = np.logical_or(y_pred, y_true)
-    
-    if np.sum(union) == 0:
-        return None
-    
-    iou = np.sum(intersection)/np.sum(union)
-    
-    if iou >= threshold:
-        return iou
-    else:
-        return None
