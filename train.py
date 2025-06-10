@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.optimizers import Adam
+from keras.optimizers import *
 from tensorflow.keras.callbacks import CSVLogger
 from unetmodule import get_unet_with_batchnorm, CustomModelCheckpoint
 
