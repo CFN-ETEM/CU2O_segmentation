@@ -1,8 +1,15 @@
-from keras.models import *
-from keras.layers import *
-from keras.initializers import *
 import tensorflow as tf
-import numpy as np
+from tensorflow.keras.layers import (
+    Activation,
+    BatchNormalization,
+    Conv2D,
+    Input,
+    MaxPooling2D,
+    UpSampling2D,
+    concatenate,
+)
+from tensorflow.keras.models import Model
+
 
 class CustomModelCheckpoint(tf.keras.callbacks.Callback):
     def __init__(self, save_path, save_every):
@@ -15,6 +22,7 @@ class CustomModelCheckpoint(tf.keras.callbacks.Callback):
             model_path = self.save_path.format(epoch=epoch + 1)
             self.model.save(model_path)
             print(f"Model saved at: {model_path}")
+
 
 def get_unet_with_batchnorm():
     inputs = Input((512, 512, 1))

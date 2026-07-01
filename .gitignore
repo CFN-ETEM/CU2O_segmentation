@@ -1,0 +1,15 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+results/
+outputs/
+data/custom/
+data/custom_augmented/
+data/notebook_demo/
+data/notebook_demo_augmented/
+manuscript_clean.docx
+manuscript_workflow_subsection/
