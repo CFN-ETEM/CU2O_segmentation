@@ -54,4 +54,3 @@ python data_preparation/dataaugmentation.py \
 
 The default settings create rotations from 0 to 350 degrees in 10-degree increments, magnification variants at 90%, 95%, 105%, and 110%, and Gaussian-blur variants with sigma values of 1 and 2. White padding connected to the image border is filled with the average non-padding image intensity before augmentation, preventing white-border artifacts after rotation. Image and label transforms are paired, and labels use nearest-neighbor interpolation to remain binary.
 
-The legacy notebooks are kept as provenance for the original manual workflow. Prefer `workflow.ipynb` and the scripts above for public use and reviewer inspection.
