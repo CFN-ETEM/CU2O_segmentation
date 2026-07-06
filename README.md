@@ -140,7 +140,3 @@ Prepare paired files for each experiment:
 Run `generate_cu2o_labels.py` on the pair. The script detects atom candidates in the IFFT image, filters them by HRTEM intensity and nearest-neighbor spacing, then writes a binary mask, overlay, and coordinate table. Tune `--min-intensity`, `--max-intensity`, `--nn-min`, `--nn-max`, and `--second-nn-max` for different contrast, magnification, or lattice spacing. Use `--crop-height` and `--crop-width` when only the interface region should be labeled.
 
 Before training, review the generated overlay and mask and manually correct the labels where needed. Then use the curated mask with `build_unet_dataset.py`, augment the prepared arrays with `dataaugmentation.py`, and train on the augmented output directory.
-
-## Notes
-
-Generated folders such as `outputs/`, `results/`, `data/custom/`, and `data/custom_augmented/` are ignored by git. The older notebooks in `data_preparation/` are retained to document the original label-generation process, but `workflow.ipynb` and the command-line scripts are the recommended public workflow.
